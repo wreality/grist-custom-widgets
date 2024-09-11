@@ -1,6 +1,8 @@
 <html>
     <head>
         <script src="https://docs.getgrist.com/grist-plugin-api.js"></script>
+        <script src="bcmath-min.js"></script>
+        <script src="pdf417-min.js"></script>
     </head>
     <body>
         <div id="label-root"></div>
@@ -13,7 +15,29 @@
             grist.onRecord(function(record) {
                 const label = document.getElementById('label-root');
                 const { SKU } = grist.mapColumnNames(record);
-                label.innerHTML = SKU
+                label.innerHTML = "";
+
+                PDF417.init(SKU);
+                var barcode = PDF417.getBarcodeArray();
+
+                var bw = 2, bh =2;
+
+                var canvas = document.createElement('canvas');
+                var ctx = canvas.getContext('2d');
+                canvas.width = bw * barcode['num_cols'];
+                canvas.height = bh * barcode['num_rows'];
+                label.appendChild(canvas);
+                var y = 0;
+                for (var r =0; r < barcode['num_rows']; ++r) {
+                    var x = 0;
+                    for (var c = 0; c < barcode['num_cols']; ++c) {
+                        if (barcode['bcode'][r][c] == 1) {
+                            ctx.fillRect(x, y, bw, bh);
+                        }
+                        x += bw;
+                    }
+                    y += bh;
+                }
             })
         </script>
     </body>
