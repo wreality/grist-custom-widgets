@@ -3,9 +3,13 @@
         <script src="https://docs.getgrist.com/grist-plugin-api.js"></script>
         <script src="bcmath-min.js"></script>
         <script src="pdf417-min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
         <script src="https://printjs-4de6.kxcdn.com/print.min.js"></script>
         <style src="https://printjs-4de6.kxcdn.com/print.min.css"></style>
         <style>
+            embed {
+                width: 100%;
+            }
             @media print {
                         @page {
                             size: 2.4in 0.8in;
@@ -29,14 +33,16 @@
     </head>
     <body>
         <div id="label-root">
-
-            <div id="label-bc"></div>
-            <div id="label-sku"></div>
         </div>
 
  <button type="button" onclick="printLabel()">Print</button>
         <script type="text/javascript">
+            const {jsPDF} = window.jspdf;
+
+
+
             function printLabel() {
+
                 const style = `
                     @media print {
                         @page {
@@ -77,10 +83,12 @@
             generateBarcode('GRIST-ATTEMPT-12345');
 
             function generateBarcode(SKU) {
-                const label = document.getElementById('label-bc');
-                const labelSku = document.getElementById('label-sku');
-                label.innerHTML = "";
-                labelSku.innerHTML = SKU;
+                const labelRoot = document.getElementById('label-root');
+                labelRoot.innerHTML = ''
+
+
+
+
                 PDF417.init(SKU);
                 var barcode = PDF417.getBarcodeArray();
 
@@ -90,7 +98,7 @@
                 var ctx = canvas.getContext('2d');
                 canvas.width = bw * barcode['num_cols'];
                 canvas.height = bh * barcode['num_rows'];
-                label.appendChild(canvas);
+
                 var y = 0;
                 for (var r =0; r < barcode['num_rows']; ++r) {
                     var x = 0;
@@ -102,6 +110,26 @@
                     }
                     y += bh;
                 }
+
+                const doc = new jsPDF({
+                    orientation: 'l',
+                    unit: 'in',
+                    format: [2.4, 0.8]
+
+                });
+                doc.addImage(canvas.toDataURL(), 'PNG', 0, 0, 2.4, 0.5);
+                doc.setFontSize(1);
+                const size = doc.getTextDimensions(SKU);
+                const {w, h} = size;
+                doc.setFontSize(2.2/w)
+                doc.text(SKU, 1.2, 0.7, {align: 'center'});
+                const data = doc.output('datauristring');
+                const embed = document.createElement('embed');
+                embed.id = 'pdf';
+                embed.width = '100%';
+                embed.height = '100%';
+                embed.src = data;
+                labelRoot.appendChild(embed);
             }
         </script>
     </body>
