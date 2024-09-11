@@ -9,9 +9,24 @@
     <body>
         <div id="label-root"></div>
 
- <button type="button" onclick="printJS({ printable: 'label-root', type: 'html', header: 'PrintJS - Form Element Selection' })">
-    Print Form with Header
+ <button type="button" onclick="printLabel">Print</button>
         <script type="text/javascript">
+            function printLabel() {
+                const style = `
+                    @media print {
+                        @page {
+                            size: 2.4in 0.8in
+                            orientation: landscape;
+                            margin: 0;
+                        }
+
+                        #label-root {
+                            width: 100%;
+                        }
+                    }
+                `
+                printJS({ printable: 'label-root', type: 'html', style});
+            }
             grist.ready({
                 columns: ['SKU'],
                 requiredAccess: 'read table'
