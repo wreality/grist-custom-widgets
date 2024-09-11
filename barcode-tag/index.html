@@ -1,8 +1,20 @@
 <html>
     <head>
-
+        <script src="https://docs.getgrist.com/grist-plugin-api.js"></script>
     </head>
     <body>
-        My First Template
+        <div id="label-root"></div>
+        <script type="text/javascript">
+            grist.ready({
+                columns: ['SKU'],
+                requiredAccess: 'read table'
+            });
+
+            grist.onRecord(function(record) {
+                const label = document.getElementById('label-root');
+                const { SKU } = grist.mapColumnNames(record);
+                label.innerHTML = SKU
+            })
+        </script>
     </body>
 </html>
