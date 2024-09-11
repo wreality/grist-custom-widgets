@@ -8,8 +8,9 @@
     </head>
     <body>
         <div id="label-root"></div>
+        <div id="label-sku"></div>
 
- <button type="button" onclick="printLabel">Print</button>
+ <button type="button" onclick="printLabel()">Print</button>
         <script type="text/javascript">
             function printLabel() {
                 const style = `
@@ -24,7 +25,7 @@
                             width: 100%;
                         }
                     }
-                `
+                `;
                 printJS({ printable: 'label-root', type: 'html', style});
             }
             grist.ready({
@@ -34,9 +35,10 @@
 
             grist.onRecord(function(record) {
                 const label = document.getElementById('label-root');
+                const labelSku = document.getElementById('label-sku');
                 const { SKU } = grist.mapColumnNames(record);
                 label.innerHTML = "";
-
+                labelSku.innerHTML = SKU;
                 PDF417.init(SKU);
                 var barcode = PDF417.getBarcodeArray();
 
