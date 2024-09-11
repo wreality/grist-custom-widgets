@@ -7,8 +7,11 @@
         <style src="https://printjs-4de6.kxcdn.com/print.min.css"></style>
     </head>
     <body>
-        <div id="label-root"></div>
-        <div id="label-sku"></div>
+        <div id="label-root">
+
+            <div id="label-bc"></div>
+            <div id="label-sku"></div>
+        </div>
 
  <button type="button" onclick="printLabel()">Print</button>
         <script type="text/javascript">
@@ -22,6 +25,7 @@
                         }
 
                         #label-root {
+                        text-align: center;
                             width: 100%;
                         }
                     }
@@ -34,7 +38,7 @@
             });
 
             grist.onRecord(function(record) {
-                const label = document.getElementById('label-root');
+                const label = document.getElementById('label-bc');
                 const labelSku = document.getElementById('label-sku');
                 const { SKU } = grist.mapColumnNames(record);
                 label.innerHTML = "";
