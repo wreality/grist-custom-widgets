@@ -33,6 +33,10 @@ function autoScaleText(doc, text, startX, startY, maxWidth, maxHeight) {
   doc.text(text, startX, startY, { align: 'center' })
 }
 
+const totalHeight = computed(() => {
+  return 0.8 * copies.value + 0.4 * (copies.value == 1 ? 0 : 1)
+})
+
 const label = computed(() => {
   const barcode = makePDF417DataUri(SKU.value)
   const height = 0.8
@@ -86,12 +90,13 @@ function makePDF417DataUri(value) {
   <div class="container bg-blue-100 h-full">
     <div class="flex flex-row gap-6 h-full">
       <embed :src="label" height="100%" />
-      <div class="flex flex-col gap-2">
+      <div class="flex flex-col gap-2 text-black">
         <InputGroup>
           <InputGroupAddon>Copies</InputGroupAddon>
           <InputNumber v-model="copies" showButtons buttonLayout="horizontal" :min="1" />
           <Button label="Reset" @click="copies = 1">Reset</Button>
         </InputGroup>
+        Total Length: {{ totalHeight }} in
       </div>
     </div>
   </div>
