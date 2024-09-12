@@ -121,7 +121,10 @@
                 doc.setFontSize(1);
                 const size = doc.getTextDimensions(SKU);
                 const {w, h} = size;
-                doc.setFontSize(2.2/w)
+                const tW = (2.4/w);
+                const tH = (0.15/h);
+
+                doc.setFontSize(Math.min(tW, tH));
                 doc.text(SKU, 1.2, 0.65, {align: 'center'});
                 const data = doc.output('datauristring');
                 const embed = document.createElement('embed');
